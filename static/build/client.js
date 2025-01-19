@@ -26,7 +26,7 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
     }
     const message = await send_file(new Blob([JSON.stringify({
       type: "file",
-      name: file.name,
+      name: window.btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.encrypt({ name: "AES-CBC", iv }, key, new TextEncoder().encode(file.name))))),
       parts,
       iv: [...iv]
     })]), "file.json");
@@ -68,7 +68,7 @@ var retrieve = async (fileId, keyObject) => {
   const url = URL.createObjectURL(blob);
   const aElem = document.createElement("a");
   aElem.href = url;
-  aElem.download = metadata.name;
+  aElem.download = new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-CBC", iv: new Uint8Array(metadata.iv) }, key, Uint8Array.from(window.atob(metadata.name), (c) => c.charCodeAt(0))));
   aElem.click();
   setTimeout(() => URL.revokeObjectURL(url));
 };
@@ -89,5 +89,5 @@ if (location.href.includes("/file/")) {
   }
 }
 
-//# debugId=A8FA4F29BD34A4A164756E2164756E21
+//# debugId=326BDE9F927749E764756E2164756E21
 //# sourceMappingURL=client.js.map

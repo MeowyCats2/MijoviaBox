@@ -104,7 +104,8 @@ app.get("/direct/:contents", async (req, res) => {
   const encrypted = new Blob(blobs)
   const key = await crypto.subtle.importKey("jwk", data.key, {'name': 'AES-CBC', 'length': 256}, true, ['encrypt', 'decrypt'])
   const blob = new Blob([new Uint8Array(await crypto.subtle.decrypt({ 'name': 'AES-CBC', 'iv': new Uint8Array(metadata.iv)}, key!, await encrypted.arrayBuffer()))])
-  res.set("Content-Disposition", `attachment, filename="${metadata.name}"`).send(Buffer.from(await blob.arrayBuffer()))
+  const name = (new TextDecoder()).decode(await crypto.subtle.decrypt({ 'name': 'AES-CBC', 'iv': new Uint8Array(metadata.iv)}, key!, new Uint8Array(Buffer.from(metadata.name, "base64").buffer)))
+  res.set("Content-Disposition", `attachment, filename="${name}"`).send(Buffer.from(await blob.arrayBuffer()))
 })
 
 app.post("/send", async (req, res) => {

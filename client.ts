@@ -27,7 +27,7 @@ const send_file = async (blob: Blob, name: string) => {
     }
     const message = await send_file(new Blob([JSON.stringify({
         type: "file",
-        name: file.name,
+        name: window.btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.encrypt({ 'name': 'AES-CBC', iv}, key!, (new TextEncoder()).encode(file.name))))),
         parts: parts,
         iv: [...iv]
     })]), "file.json");
@@ -71,7 +71,7 @@ const retrieve = async (fileId: string, keyObject: any) => {
   const url = URL.createObjectURL(blob)
   const aElem = document.createElement("a")
   aElem.href = url
-  aElem.download = metadata.name
+  aElem.download = (new TextDecoder()).decode(await crypto.subtle.decrypt({ 'name': 'AES-CBC', 'iv': new Uint8Array(metadata.iv)}, key!, Uint8Array.from(window.atob(metadata.name), c => c.charCodeAt(0))))
   aElem.click()
   setTimeout(() => URL.revokeObjectURL(url))
 }
