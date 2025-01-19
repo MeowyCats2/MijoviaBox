@@ -43,7 +43,7 @@ body {
     text-align: center;
 }
 
-#uploadLabel {
+#uploadLabel, .button {
     background: #5865f2;
     cursor: pointer;
     border-radius: 8px;
@@ -51,13 +51,18 @@ body {
     padding: 8px 32px;
 }
 
+a.button {
+    color: white;
+    text-decoration: none;
+}
+
 #percentage {
-    top: 45vh;
+    top: 40vh;
     font-size: 2rem;
 }
 
 #shareLinks {
-    top: 60vh;
+    top: 50vh;
     width: 50vw;
     word-wrap: break-word;
     text-decoration: none;

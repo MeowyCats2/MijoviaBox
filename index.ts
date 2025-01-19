@@ -1,4 +1,5 @@
 import express from "express"
+import "express-async-errors"
 import bodyParser from "body-parser"
 import multer from "multer"
 import "./build.ts"
@@ -106,6 +107,62 @@ app.get("/direct/:contents", async (req, res) => {
   const blob = new Blob([new Uint8Array(await crypto.subtle.decrypt({ 'name': 'AES-CBC', 'iv': new Uint8Array(metadata.iv)}, key!, await encrypted.arrayBuffer()))])
   const name = (new TextDecoder()).decode(await crypto.subtle.decrypt({ 'name': 'AES-CBC', 'iv': new Uint8Array(metadata.iv)}, key!, new Uint8Array(Buffer.from(metadata.name, "base64").buffer)))
   res.set("Content-Disposition", `attachment, filename="${name}"`).send(Buffer.from(await blob.arrayBuffer()))
+})
+
+app.get("/delete/:contents/:code", async (req, res) => {
+  res.send(`<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>MijoviaBox</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta content="MijoviaBox" property="og:title">
+  </head>
+  <body>
+    <div id="main">
+      <h1 id="title">MijoviaBox</h1>
+      <p>Are you sure you would like to delete this file?</p>
+      <a href="/delete/${req.params.contents}/${req.params.code}/confirm" class="button">Delete</a>
+    </div>
+  </body>
+</html>`)
+});
+
+app.get("/delete/:contents/:code/confirm", async (req, res) => {
+  let data = null;
+  try {
+    data = JSON.parse(Buffer.from(req.params.contents, "base64").toString());
+  } catch (e) {
+    console.error(e);
+    return void res.status(400).send("Invalid URL.")
+  }
+  const metadataURL = (await (await fetch(process.env.webhook + "/messages/" + data.fileId)).json()).attachments[0].url
+  const metadata = await (await fetch(metadataURL)).json()
+  console.log(metadata)
+  if (metadata.deletionCode !== req.params.code) return void res.status(400).send("Invalid deletion code.")
+  for (const partId of metadata.parts) {
+    console.log(await (await fetch(process.env.webhook + "/messages/" + partId, {
+      method: "DELETE"
+    })).json())
+  }
+  console.log(await (await fetch(process.env.webhook + "/messages/" + data.fileId, {
+    method: "DELETE"
+  })).json())
+  res.send(`<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>MijoviaBox</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta content="MijoviaBox" property="og:title">
+  </head>
+  <body>
+    <div id="main">
+      <h1 id="title">MijoviaBox</h1>
+      <p>Successfully deleted!</p>
+    </div>
+  </body>
+</html>`)
 })
 
 app.post("/send", async (req, res) => {

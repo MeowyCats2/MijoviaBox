@@ -25,11 +25,13 @@ const send_file = async (blob: Blob, name: string) => {
         parts.push(res.id)
         document.getElementById("percentage")!.textContent = i / encrypted.size * 100 + "%"
     }
+    const deletionCode = (Math.random() + "").replace("0.", "")
     const message = await send_file(new Blob([JSON.stringify({
         type: "file",
         name: window.btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.encrypt({ 'name': 'AES-CBC', iv}, key!, (new TextEncoder()).encode(file.name))))),
         parts: parts,
-        iv: [...iv]
+        iv: [...iv],
+        deletionCode
     })]), "file.json");
     console.log(message);
     document.getElementById("shareLinks")!.hidden = false;
@@ -41,7 +43,9 @@ const send_file = async (blob: Blob, name: string) => {
     (document.getElementById("indirectURL") as HTMLAnchorElement).href = location.origin + "/file/" + contents
     document.getElementById("indirectURL")!.textContent = (document.getElementById("indirectURL") as HTMLAnchorElement).href;
     (document.getElementById("directURL") as HTMLAnchorElement).href = location.origin + "/direct/" + contents
-    document.getElementById("directURL")!.textContent = (document.getElementById("directURL") as HTMLAnchorElement).href
+    document.getElementById("directURL")!.textContent = (document.getElementById("directURL") as HTMLAnchorElement).href;
+    (document.getElementById("deleteURL") as HTMLAnchorElement).href = location.origin + "/delete/" + contents + "/" + deletionCode
+    document.getElementById("deleteURL")!.textContent = (document.getElementById("deleteURL") as HTMLAnchorElement).href
   } catch (e) {
     document.getElementById("percentage")!.textContent = "An error occured!";
     throw e;

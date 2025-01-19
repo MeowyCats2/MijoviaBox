@@ -24,11 +24,13 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
       parts.push(res.id);
       document.getElementById("percentage").textContent = i / encrypted.size * 100 + "%";
     }
+    const deletionCode = (Math.random() + "").replace("0.", "");
     const message = await send_file(new Blob([JSON.stringify({
       type: "file",
       name: window.btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.encrypt({ name: "AES-CBC", iv }, key, new TextEncoder().encode(file.name))))),
       parts,
-      iv: [...iv]
+      iv: [...iv],
+      deletionCode
     })]), "file.json");
     console.log(message);
     document.getElementById("shareLinks").hidden = false;
@@ -41,6 +43,8 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
     document.getElementById("indirectURL").textContent = document.getElementById("indirectURL").href;
     document.getElementById("directURL").href = location.origin + "/direct/" + contents;
     document.getElementById("directURL").textContent = document.getElementById("directURL").href;
+    document.getElementById("deleteURL").href = location.origin + "/delete/" + contents + "/" + deletionCode;
+    document.getElementById("deleteURL").textContent = document.getElementById("deleteURL").href;
   } catch (e2) {
     document.getElementById("percentage").textContent = "An error occured!";
     throw e2;
@@ -89,5 +93,5 @@ if (location.href.includes("/file/")) {
   }
 }
 
-//# debugId=326BDE9F927749E764756E2164756E21
+//# debugId=C6B3F2734669314164756E2164756E21
 //# sourceMappingURL=client.js.map
