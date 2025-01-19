@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>MijoviaBox</title>
+    <script src="/static/build/client.js" type="module" defer></script>
+    <link rel="stylesheet" href="/static/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta content="MijoviaBox" property="og:title">
+  </head>
+  <body>
+    <div id="main">
+      <h1 id="title">MijoviaBox</h1>
+      <input type="file" id="fileUpload">
+      <label for="fileUpload" id="uploadLabel" tabindex="0" role="button">Upload</label>
+    </div>
+    <span id="percentage"></span>
+    <br/>
+    <div id="shareLinks" hidden>
+      <p>
+        Indirect web page link: <a id="indirectURL"></a>
+      </p>
+      <p>
+        Direct download: <a id="directURL"></a>
+      </p>
+    </div>
+  </body>
+</html>

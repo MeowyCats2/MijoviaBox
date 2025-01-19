@@ -1,0 +1,68 @@
+@font-face {
+    font-family: 'Rubik';
+    font-style: normal;
+    font-weight: 300 900;
+    font-display: swap;
+    src: url(./Rubik/Rubik-VariableFont_wght.ttf) format('woff2');
+}
+
+@font-face {
+    font-family: 'Rubik';
+    font-style: italic;
+    font-weight: 300 900;
+    font-display: swap;
+    src: url(./Rubik/Rubik-Italic-VariableFont_wght.ttf) format('woff2');
+}
+
+body {
+    background: #313338;
+    color: white;
+    height: 100vh;
+    height: 100dvh;
+    font-family: Rubik, sans-serif;
+}
+
+#fileUpload {
+    display: none;
+}
+
+#main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    top: 15vh;
+}
+
+#main, #percentage, #shareLinks {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+#uploadLabel {
+    background: #5865f2;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    padding: 8px 32px;
+}
+
+#percentage {
+    top: 45vh;
+    font-size: 2rem;
+}
+
+#shareLinks {
+    top: 60vh;
+    width: 50vw;
+    word-wrap: break-word;
+    text-decoration: none;
+}
+
+#shareLinks a {
+    color: oklab(0.705539 -0.0795959 -0.14426);
+}
