@@ -31,6 +31,7 @@ const send_file = async (blob: Blob, name: string) => {
         name: window.btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.encrypt({ 'name': 'AES-CBC', iv}, key!, (new TextEncoder()).encode(file.name))))),
         parts: parts,
         iv: [...iv],
+        mimeType: file.type,
         deletionCode
     })]), "file.json");
     console.log(message);
